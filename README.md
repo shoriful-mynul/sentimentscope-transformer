@@ -124,10 +124,12 @@ model.eval()
 
 ```text
 sentimentscope-transformer/
-│
 ├── README.md
-├── SentimentScope.ipynb
-└── sentimentscope_model.pth
+└── SentimentScope.ipynb
+
+GitHub Release:
+└── v1.0.0
+    └── sentimentscope_model.pth
 ```
 
 > The model checkpoint is distributed as a GitHub Release asset rather than as a regular repository file.
