@@ -1,82 +1,85 @@
 # SentimentScope: Sentiment Analysis Using Transformers
 
-A transformer-based sentiment classification project built with PyTorch and the IMDB movie review dataset.
+A transformer-based binary sentiment classification project built with PyTorch and the IMDB Large Movie Review Dataset.
 
-## Overview
+## Project Overview
 
-SentimentScope is a binary sentiment analysis system that classifies movie reviews as either **positive** or **negative**.
+SentimentScope is a sentiment analysis system designed to classify movie reviews as either **positive** or **negative**.
 
-The project was developed in the context of CineScope, an entertainment company looking to better understand user sentiment and use those insights to support more personalized movie and content recommendations.
+The project was developed in the context of CineScope, a fictional entertainment company interested in understanding user sentiment from movie reviews and using these insights to support personalized content recommendations.
 
-Rather than using a pre-built classification model, this project adapts a custom transformer architecture for sequence-level sentiment classification.
+The project adapts a custom transformer architecture for sequence-level text classification and evaluates its performance on the IMDB test dataset.
 
-## Project Objectives
+## Objectives
 
-The project focuses on:
+The main objectives of this project are to:
 
-* Loading and exploring the IMDB movie review dataset
-* Preparing labeled text data for transformer-based classification
-* Tokenizing reviews using the `bert-base-uncased` tokenizer
-* Building custom PyTorch `Dataset` and `DataLoader` implementations
-* Adapting a transformer architecture for binary classification
-* Training the model using cross-entropy loss and AdamW
-* Monitoring validation performance during training
-* Evaluating the final model on an unseen test set
+* Explore and preprocess the IMDB movie review dataset
+* Tokenize text using the `bert-base-uncased` tokenizer
+* Build custom PyTorch `Dataset` and `DataLoader` pipelines
+* Adapt a transformer architecture for binary sentiment classification
+* Train the model using supervised learning
+* Monitor validation performance during training
+* Evaluate the trained model on an unseen test dataset
+* Save the trained model as a reusable checkpoint
 
 ## Dataset
 
-The project uses the **IMDB Large Movie Review Dataset**, containing 50,000 labeled movie reviews:
+The project uses the **IMDB Large Movie Review Dataset**, which contains 50,000 labeled movie reviews:
 
-* 25,000 training reviews
-* 25,000 test reviews
-* Positive reviews are labeled `1`
-* Negative reviews are labeled `0`
+* **25,000** training reviews
+* **25,000** test reviews
+* **Positive:** label `1`
+* **Negative:** label `0`
 
-The training set is further divided into training and validation subsets.
+The original training set is further divided into training and validation subsets during the project workflow.
 
-Dataset source:
+### Dataset Source
 
 https://ai.stanford.edu/~amaas/data/sentiment/
 
 ## Model Architecture
 
-The project uses a custom transformer model implemented in PyTorch.
+The project uses a custom transformer model implemented with PyTorch.
 
-The architecture is adapted from a generation-style transformer to perform binary sequence classification.
+The architecture was adapted from a generation-oriented transformer to perform sequence-level binary classification.
 
-The main modifications include:
+### Classification Pipeline
 
-1. **BERT-based subword tokenization**
+**1. Tokenization**
 
-   Reviews are tokenized using the `bert-base-uncased` tokenizer with padding and truncation.
+Movie reviews are tokenized using the `bert-base-uncased` tokenizer. Padding and truncation are applied to prepare the text for transformer processing.
 
-2. **Transformer representation**
+**2. Transformer Representation**
 
-   Token embeddings are processed through the transformer architecture.
+The tokenized inputs are passed through the transformer architecture to generate contextual representations for the input sequence.
 
-3. **Mean pooling**
+**3. Mean Pooling**
 
-   The token-level representations are aggregated into a single representation for the complete review.
+The token-level representations are aggregated using mean pooling to obtain a single representation for the complete review.
 
-4. **Classification head**
+**4. Classification Head**
 
-   The pooled representation is passed through a linear layer to produce two logits corresponding to the negative and positive classes.
+The pooled representation is passed through a linear classification layer that produces two logits:
 
-## Training
+* `0` → Negative
+* `1` → Positive
 
-The model was trained using:
+## Training Configuration
 
-* **Framework:** PyTorch
-* **Tokenizer:** `bert-base-uncased`
-* **Optimizer:** AdamW
-* **Learning rate:** `3e-4`
-* **Epochs:** 5
-* **Loss function:** Cross-Entropy Loss
-* **Task:** Binary sentiment classification
+| Parameter     | Value                           |
+| ------------- | ------------------------------- |
+| Framework     | PyTorch                         |
+| Tokenizer     | `bert-base-uncased`             |
+| Optimizer     | AdamW                           |
+| Learning Rate | `3e-4`                          |
+| Epochs        | 5                               |
+| Loss Function | Cross-Entropy Loss              |
+| Task          | Binary Sentiment Classification |
 
-Validation accuracy was monitored after every epoch.
+## Validation Results
 
-### Validation Performance
+Validation accuracy was evaluated after each training epoch.
 
 | Epoch | Validation Accuracy |
 | ----: | ------------------: |
@@ -86,97 +89,143 @@ Validation accuracy was monitored after every epoch.
 |     4 |              77.12% |
 |     5 |              78.92% |
 
-The best validation accuracy observed during training was **78.92%** at epoch 5.
+The highest recorded validation accuracy was **78.92%** at epoch 5.
 
 ## Test Results
 
 After training, the final model was evaluated on the held-out IMDB test dataset.
 
-**Test Accuracy: 77.35%**
+### Final Test Accuracy
 
-The project requirement was to achieve an accuracy greater than 75%, which the final model achieved.
+**77.35%**
+
+The project requirement was to achieve a test accuracy greater than **75%**. The trained model achieved **77.35%** on the test dataset.
+
+## Model Checkpoint
+
+The trained model parameters are provided as a PyTorch checkpoint:
+
+```text
+sentimentscope_model.pth
+```
+
+The checkpoint is approximately **35 MB** and is provided through the project's **GitHub Release** because the standard GitHub repository web uploader has a file-size limitation.
+
+The checkpoint can be downloaded from the **Releases** section of this repository.
+
+To load the checkpoint, the model architecture must first be defined and initialized in the same way as in the notebook. The saved parameters can then be loaded using:
+
+```python
+model.load_state_dict(torch.load("sentimentscope_model.pth", map_location=device))
+model.eval()
+```
 
 ## Repository Structure
 
 ```text
 sentimentscope-transformer/
 │
+├── README.md
 ├── SentimentScope.ipynb
-├── sentimentscope_model.pth
-└── README.md
+└── sentimentscope_model.pth
 ```
+
+> The model checkpoint is distributed as a GitHub Release asset rather than as a regular repository file.
 
 ### Files
 
-**`SentimentScope.ipynb`**
+#### `SentimentScope.ipynb`
 
-Contains the complete project workflow, including:
+The completed Jupyter notebook containing the full project workflow, including:
 
-* Dataset loading and exploration
-* Data preprocessing
+* Dataset download and loading
+* Dataset exploration
+* Text preprocessing
 * Tokenization
 * PyTorch Dataset and DataLoader implementation
 * Transformer architecture
-* Accuracy calculation
+* Model initialization
 * Training loop
 * Validation
-* Final test evaluation
-* Project conclusion
+* Test evaluation
+* Model checkpoint saving
+* Final project conclusion
 
-**`sentimentscope_model.pth`**
+#### `sentimentscope_model.pth`
 
-Contains the trained model parameters from the model evaluated on the IMDB test set.
+The trained PyTorch model checkpoint containing the learned model parameters.
 
-## How to Reproduce
+## How to Run the Project
 
-1. Clone the repository.
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/shoriful-mynul/sentimentscope-transformer.git
 cd sentimentscope-transformer
 ```
 
-2. Open `SentimentScope.ipynb` in Google Colab or a compatible Jupyter environment.
+### 2. Open the notebook
 
-3. Install the required Python packages if they are not already available.
+Open:
 
-4. Download and extract the IMDB dataset.
+```text
+SentimentScope.ipynb
+```
 
-5. Run the notebook cells in order.
+in Google Colab or a compatible Jupyter environment.
 
-> Training the transformer from scratch can take significant time depending on the available hardware.
+### 3. Install the required dependencies
+
+The notebook contains the required package setup and imports.
+
+### 4. Download the dataset
+
+Run the dataset preparation cells in the notebook to download and extract the IMDB dataset.
+
+### 5. Run the notebook
+
+Execute the cells in order to reproduce the data preparation, model construction, training, validation, and test evaluation workflow.
+
+> Training the transformer model can take significant time depending on the available hardware.
 
 ## Technologies Used
 
 * Python
 * PyTorch
-* Transformers
-* Hugging Face Tokenizers
+* Hugging Face Transformers
 * Pandas
 * NumPy
 * Matplotlib
 * scikit-learn
 * Google Colab
+* Jupyter Notebook
 
 ## Key Learnings
 
-This project demonstrates how a transformer originally designed around sequence modeling can be adapted for a classification task.
+This project provided practical experience with:
 
-The main conceptual differences from text generation include:
+* Transformer-based NLP
+* Text tokenization
+* Sequence classification
+* PyTorch Dataset and DataLoader design
+* Transformer architecture adaptation
+* Mean pooling for sequence representation
+* Classification heads
+* Model training and validation
+* Test-set evaluation
+* Saving and loading PyTorch model checkpoints
 
-* Predicting a class instead of the next token
-* Representing an entire review with a pooled representation
-* Using a classification head instead of a vocabulary prediction head
-* Training with labeled examples and classification loss
-* Evaluating using classification accuracy
-
-The project also provided practical experience with transformer architecture, text tokenization, PyTorch data pipelines, model training, validation, and evaluation.
+A key aspect of the project was adapting a transformer architecture originally intended for sequence modeling to perform binary sentiment classification.
 
 ## Result
 
 **Final Test Accuracy: 77.35%**
 
 The trained transformer successfully exceeded the project's required test accuracy threshold of 75%.
+
+## Conclusion
+
+SentimentScope successfully demonstrates a transformer-based approach to binary sentiment classification on the IMDB movie review dataset.
 
 ## Author
 
